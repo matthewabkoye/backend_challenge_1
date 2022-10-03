@@ -1,0 +1,16 @@
+  spring:
+    datasource:
+      url: 'jdbc:h2:mem:testdb'
+      driverClassName: 'org.h2.Driver'
+      username: sa
+      password: password
+    jpa:
+      database-platform: 'org.hibernate.dialect.H2Dialect'
+  server:
+    servlet:
+      context-path: '/api'
+
+#  datasource:
+#    jdbc-url: jdbc:mysql://172.17.10.16:3306/tms_db2?createDatabaseIfNotExist=true&autoReconnect=true&serverTimezone=UTC&zeroDateTimeBehavior=convertToNull
+#    username: samuel.sawyerr
+#    password: A123456@qwER1#
