@@ -18,7 +18,11 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.function.ServerRequest;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -35,14 +39,25 @@ public class TransactionTest {
     private ProductRepository productRepository;
 
     @Autowired
+    private WebApplicationContext context;
+
+    @Autowired
     private MockMvc mockMvc;
 
     @Autowired
     private ObjectMapper mapper;
     private Product p;
     private  User u1,u;
+
+
     @BeforeEach
     void setup(){
+
+        mockMvc = MockMvcBuilders
+                .webAppContextSetup(context)
+                .apply(SecurityMockMvcConfigurers.springSecurity())
+                .build();
+
         u = new User();
         u.setPassword("test123");
         u.setRole(Role.BUYER);
@@ -72,30 +87,26 @@ public class TransactionTest {
     }
 
     @Test
+    @WithMockUser(username = "Tester",authorities = {"BUYER"})
     void whenUserAmountIsEnoughToBuyProduct_success() throws Exception{
         PurchaseRequest request = new PurchaseRequest();
         request.setProductId(p.getId());
         request.setQuantity(3);
         String req = mapper.writeValueAsString(request);
-        HttpHeaders headers = new HttpHeaders();
-        headers.setBasicAuth(u.getUsername(),"test123");
         this.mockMvc.perform(post("/buy").accept(MediaType.APPLICATION_JSON)
                         .contentType("application/json")
-                        .headers(headers)
                         .content(req))
                 .andExpect(status().is2xxSuccessful()).andDo(print());
     }
 
     @Test
+    @WithMockUser(username = "Tester",authorities = {"BUYER"})
     void whenBuyerDeposit_success() throws Exception {
         DepositRequest request = new DepositRequest();
         request.setCoin(50);
         String req = mapper.writeValueAsString(request);
-        HttpHeaders headers = new HttpHeaders();
-        headers.setBasicAuth(u.getUsername(),"test123");
         this.mockMvc.perform(post("/deposit").accept(MediaType.APPLICATION_JSON)
                         .contentType("application/json")
-                        .headers(headers)
                         .content(req))
                 .andExpect(status().is2xxSuccessful()).andDo(print());
     }

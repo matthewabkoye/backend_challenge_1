@@ -13,7 +13,11 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -31,8 +35,16 @@ public class IntegrationTest {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private WebApplicationContext context;
+
     @BeforeEach
     void setup(){
+        mockMvc = MockMvcBuilders
+                .webAppContextSetup(context)
+                .apply(SecurityMockMvcConfigurers.springSecurity())
+                .build();
+
         User u = new User();
         u.setPassword("pass1231");
         u.setUsername("testUser1");
@@ -68,10 +80,10 @@ public class IntegrationTest {
     }
 
     @Test
+    @WithMockUser("testUser1")
     void testUserFetch_success() throws Exception{
-        HttpHeaders headers = new HttpHeaders();
-        headers.setBasicAuth("testUser1","pass1231");
-        this.mockMvc.perform(get("/user").headers(headers))
+
+        this.mockMvc.perform(get("/user"))
                 .andDo(print())
                 .andExpect(status().is2xxSuccessful());
     }
