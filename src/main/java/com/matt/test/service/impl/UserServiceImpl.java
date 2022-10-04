@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -63,12 +64,16 @@ public class UserServiceImpl implements UserService {
         if(username != null && !username.isEmpty()){
             Optional<User>optUser = userRepository.findByUsername(username);
             User user = optUser.orElseThrow(() -> new UsernameNotFoundException("Username not found"));
+            user.setPassword(null);
             List<User>users = Arrays.asList(user);
             return users;
         }else{
             Pageable pageRequest = PageRequest.of(page-1,pageSize);
             Page<User> users = userRepository.findAll(pageRequest);
-            return users.getContent();
+            return users.getContent().stream().map(u -> {
+                u.setPassword(null);
+                return u;
+            }).collect(Collectors.toList());
         }
 
     }

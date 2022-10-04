@@ -1,12 +1,12 @@
 package com.matt.test.resp;
 
-import com.matt.test.constant.RestBase;
 import com.matt.test.dto.CreateProductRequest;
 import com.matt.test.dto.CreateProductResponse;
 import com.matt.test.dto.UpdateProductRequest;
 import com.matt.test.service.ProductService;
-import org.springframework.boot.actuate.trace.http.HttpTrace;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -16,6 +16,8 @@ import java.security.Principal;
 
 @RestController
 @RequestMapping("/product")
+@CrossOrigin
+@Slf4j
 public class ProductController {
     private final ProductService productService;
 
@@ -23,12 +25,16 @@ public class ProductController {
         this.productService =  productService;
     }
 
+
+    @PreAuthorize("hasRole('Seller')")
     @PostMapping
-    public ResponseEntity<?>create(@RequestBody @Validated CreateProductRequest request,Principal principal){
-        CreateProductResponse product = productService.create(request, principal);
+    public ResponseEntity<?>create(@RequestBody @Validated CreateProductRequest request){
+        CreateProductResponse product = productService.create(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(product);
     }
 
+    @PreAuthorize("isAuthenticated()")
+    @ResponseBody
     @GetMapping
     public ResponseEntity<?> getProduct(@RequestParam(name = "productName",required = false)Long productId,
                                         @RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
@@ -38,14 +44,15 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.OK).body(productService.fetch(productId,page,pageSize,principal)) ;
     }
 
+    @PreAuthorize("hasAuthority('Seller')")
     @PutMapping
     public ResponseEntity<?> update(@RequestBody UpdateProductRequest request,
                                     @RequestParam(value = "productId",required = true) Long productId,Principal principal){
         return ResponseEntity.ok(productService.update(request,productId, principal));
     }
 
+    @PreAuthorize("hasAuthority('Seller')")
     @DeleteMapping
-    @PreAuthorize("{hasRole=Seller}")
     public ResponseEntity delete(@RequestParam(required = true)Long productId, Principal principal){
         return ResponseEntity.ok(productService.delete(productId, principal));
     }

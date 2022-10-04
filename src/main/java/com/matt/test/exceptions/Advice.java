@@ -1,8 +1,6 @@
-package com.matt.test.resp;
+package com.matt.test.exceptions;
 
-import com.matt.test.exceptions.ErrorResponse;
-import com.matt.test.exceptions.NoPermissionException;
-import com.matt.test.exceptions.NotFoundException;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;

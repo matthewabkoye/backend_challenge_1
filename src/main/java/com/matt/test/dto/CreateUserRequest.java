@@ -22,6 +22,5 @@ public class CreateUserRequest {
     @NotNull
     private double deposit;
     @NotBlank(message = "role requires")
-    @Size(max = 6, min =5, message = "Role can either be buyer of Seller")
     private String role;
 }

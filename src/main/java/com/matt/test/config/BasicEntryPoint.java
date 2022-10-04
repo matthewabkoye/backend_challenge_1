@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 @Slf4j
+
 @Component
 public class BasicEntryPoint extends BasicAuthenticationEntryPoint {
 

@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -17,7 +18,6 @@ import java.util.Optional;
 import java.util.Set;
 
 @Component
-//@Scope("prototype")
 public class CustomeUserDetailService implements UserDetailsService {
 
     @Autowired
@@ -28,45 +28,13 @@ public class CustomeUserDetailService implements UserDetailsService {
         Optional<User>optUser = userRepository.findByUsername(username);
         User u = optUser.orElseThrow(() -> new UsernameNotFoundException("Invalid username"));
 
-        UserDetails ud = new UserDetails() {
-            @Override
-            public Collection<? extends GrantedAuthority> getAuthorities() {
-                SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(u.getRole());
-                Set<SimpleGrantedAuthority>set = new HashSet<>();
-                set.add(simpleGrantedAuthority);
-                return set;
-            }
+        return new CustomUserDetail(u);
+    }
 
-            @Override
-            public String getPassword() {
-                return u.getPassword();
-            }
-
-            @Override
-            public String getUsername() {
-                return u.getUsername();
-            }
-
-            @Override
-            public boolean isAccountNonExpired() {
-                return false;
-            }
-
-            @Override
-            public boolean isAccountNonLocked() {
-                return false;
-            }
-
-            @Override
-            public boolean isCredentialsNonExpired() {
-                return false;
-            }
-
-            @Override
-            public boolean isEnabled() {
-                return false;
-            }
-        };
-        return ud;
+    private Collection<? extends GrantedAuthority> getAuthorities(User u) {
+        SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(u.getRole());
+        Set<SimpleGrantedAuthority>set = new HashSet<>();
+        set.add(simpleGrantedAuthority);
+        return set;
     }
 }

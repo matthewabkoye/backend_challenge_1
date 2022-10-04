@@ -11,6 +11,7 @@ import com.matt.test.model.User;
 import com.matt.test.repo.ProductRepository;
 import com.matt.test.repo.UserRepository;
 import com.matt.test.service.ProductService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
@@ -35,9 +37,11 @@ public class ProductServiceImpl implements ProductService {
         this.mapper = mapper;
     }
     @Override
-    public CreateProductResponse create(CreateProductRequest request, Principal principal) {
-
-       Optional<User>optUser = userRepository.findByUsername(principal.getName());
+    public CreateProductResponse create(CreateProductRequest request) {
+        //log.info("Principal :: {}",principal);
+        log.info("==========================================");
+        String principal = SecurityContextHolder.getContext().getAuthentication().getName();
+       Optional<User>optUser = userRepository.findByUsername(principal);
 
        Product product = mapper.convertValue(request,Product.class);
        product.setSellerId(optUser.get());

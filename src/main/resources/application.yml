@@ -7,8 +7,9 @@
     jpa:
       database-platform: 'org.hibernate.dialect.H2Dialect'
   server:
+    port: 8080
     servlet:
-      context-path: '/api'
+      context-path: '/assignment'
 
 #  datasource:
 #    jdbc-url: jdbc:mysql://172.17.10.16:3306/tms_db2?createDatabaseIfNotExist=true&autoReconnect=true&serverTimezone=UTC&zeroDateTimeBehavior=convertToNull
