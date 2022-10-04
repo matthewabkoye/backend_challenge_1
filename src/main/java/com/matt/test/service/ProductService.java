@@ -8,7 +8,7 @@ import java.security.Principal;
 import java.util.List;
 
 public interface ProductService {
-    CreateProductResponse create(CreateProductRequest request);
+    CreateProductResponse create(CreateProductRequest request, Principal principal);
     List<Product> fetch(Long productId, Integer page, Integer pageSize, Principal principal);
     Product update(UpdateProductRequest request, Long productId, Principal principal);
     Product delete(Long productId, Principal principal);

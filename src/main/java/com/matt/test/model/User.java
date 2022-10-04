@@ -1,5 +1,6 @@
 package com.matt.test.model;
 
+import com.matt.test.enums.Role;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -15,7 +16,7 @@ public class User {
     private String username;
     private String password;
     private double deposit;
-    private String role;
-
+    @Enumerated(EnumType.ORDINAL)
+    private Role role;
 
 }

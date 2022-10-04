@@ -38,9 +38,6 @@ public class UserServiceImpl implements UserService {
     }
     @Override
     public CreateUserResponse create(CreateUserRequest request) {
-        if(!request.getRole().equalsIgnoreCase("seller") && !request.getRole().equalsIgnoreCase("buyer")){
-            throw new NoPermissionException("Invalid role");
-        }
         Optional<User>u = userRepository.findByUsername(request.getUsername());
         if(u.isPresent()){
             throw new NoPermissionException("User with the username exist");
@@ -88,10 +85,7 @@ public class UserServiceImpl implements UserService {
         if(request.getDeposit() != null){
             user.setDeposit(request.getDeposit());
         }
-        if (request.getRole() != null && !request.getRole().isEmpty()){
-            if(!request.getRole().equalsIgnoreCase("seller")&&request.getRole().equalsIgnoreCase("buyer")){
-                throw new RuntimeException("Invalid role");
-            }
+        if (request.getRole() != null){
             user.setRole(request.getRole());
         }
         user = userRepository.save(user);

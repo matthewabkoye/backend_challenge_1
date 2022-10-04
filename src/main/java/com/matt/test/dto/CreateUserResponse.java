@@ -1,22 +1,21 @@
 package com.matt.test.dto;
 
-import com.sun.istack.NotNull;
+import com.matt.test.enums.Role;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Data
 @NoArgsConstructor
 public class CreateUserResponse {
-    @NotBlank(message = "username requires")
+    @NotBlank(message = "username required")
     private String username;
-    @NotNull
+    @NotNull(message = "Deposit required")
     private Double deposit;
-    @NotBlank(message = "role requires")
-    @Size(max = 6, min =5, message = "Role can either be buyer of Seller")
-    private String role;
-
+    @NotNull(message = "role required")
+    private Role role;
     private Long id;
 }

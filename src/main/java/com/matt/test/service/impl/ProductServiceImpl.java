@@ -37,11 +37,11 @@ public class ProductServiceImpl implements ProductService {
         this.mapper = mapper;
     }
     @Override
-    public CreateProductResponse create(CreateProductRequest request) {
+    public CreateProductResponse create(CreateProductRequest request, Principal principal) {
         //log.info("Principal :: {}",principal);
-        log.info("==========================================");
-        String principal = SecurityContextHolder.getContext().getAuthentication().getName();
-       Optional<User>optUser = userRepository.findByUsername(principal);
+
+       // String principal = SecurityContextHolder.getContext().getAuthentication().getName();
+       Optional<User>optUser = userRepository.findByUsername(principal.getName());
 
        Product product = mapper.convertValue(request,Product.class);
        product.setSellerId(optUser.get());

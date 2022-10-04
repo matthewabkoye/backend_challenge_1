@@ -1,17 +1,27 @@
   spring:
     datasource:
-      url: 'jdbc:h2:mem:testdb'
-      driverClassName: 'org.h2.Driver'
-      username: sa
-      password: password
+      url: 'jdbc:mysql://172.17.10.16:3306/Assignment?createDatabaseIfNotExist=true&autoReconnect=true&serverTimezone=UTC'
+      driver-class-name: 'com.mysql.cj.jdbc.Driver'
+      username: samuel.sawyerr
+      password: A123456@qwER1#
     jpa:
-      database-platform: 'org.hibernate.dialect.H2Dialect'
+      database-platform: 'org.hibernate.dialect.MySQL5InnoDBDialect'
+      properties:
+        hibernate:
+          dialect: 'org.hibernate.dialect.MySQL5InnoDBDialect'
+      hibernate:
+        ddl-auto: update
+
   server:
     port: 8080
-    servlet:
-      context-path: '/assignment'
+#    servlet:
+#      context-path: '/assignment'
 
-#  datasource:
-#    jdbc-url: jdbc:mysql://172.17.10.16:3306/tms_db2?createDatabaseIfNotExist=true&autoReconnect=true&serverTimezone=UTC&zeroDateTimeBehavior=convertToNull
-#    username: samuel.sawyerr
-#    password: A123456@qwER1#
+
+  logging:
+    level:
+      web: debug
+      com:
+        matt: debug
+      org:
+        springframework.*: debug

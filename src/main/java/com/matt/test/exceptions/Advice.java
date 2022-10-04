@@ -25,17 +25,19 @@ public class Advice {
         ErrorResponse response = new ErrorResponse();
         response.setStatus(HttpStatus.BAD_REQUEST);
         response.setDescription(ex.getMessage());
+        response.setTime(System.currentTimeMillis());
+        response.setPath(request.getContextPath());
         return response;
     }
 
-    @ExceptionHandler(Exception.class)
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    public ErrorResponse generalException(Exception ex, WebRequest request) {
-        ErrorResponse response = new ErrorResponse();
-        response.setStatus(HttpStatus.EXPECTATION_FAILED);
-        response.setDescription(ex.getMessage());
-        return response;
-    }
+//    @ExceptionHandler(Exception.class)
+//    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+//    public ErrorResponse generalException(Exception ex, WebRequest request) {
+//        ErrorResponse response = new ErrorResponse();
+//        response.setStatus(HttpStatus.EXPECTATION_FAILED);
+//        response.setDescription(ex.getMessage());
+//        return response;
+//    }
 
 
 }

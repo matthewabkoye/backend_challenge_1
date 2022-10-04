@@ -1,5 +1,7 @@
 package com.matt.test.service.impl;
 
+import com.matt.test.dto.DepositRequest;
+import com.matt.test.dto.PurchaseRequest;
 import com.matt.test.dto.PurchaseResponse;
 import com.matt.test.exceptions.NoPermissionException;
 import com.matt.test.exceptions.NotFoundException;
@@ -26,32 +28,36 @@ public class TransactionServiceImpl implements TransactionService {
         this.productRepository = productRepository;
     }
     @Override
-    public User deposit(int coin) {
-        if(!checkDeposit(coin)){
+    public User deposit(DepositRequest depositRequest) {
+        if(!checkDeposit(depositRequest.getCoin())){
             throw new NoPermissionException("Amount not permitted");
         }
         String principal = SecurityContextHolder.getContext().getAuthentication().getName();
         Optional<User>optionalUser = userRepository.findByUsername(principal);
         User user = optionalUser.orElseThrow(() -> new NotFoundException("User not found"));
-        user.setDeposit(coin);
+        user.setDeposit(depositRequest.getCoin()+user.getDeposit());
         user = userRepository.save(user);
         user.setPassword(null);
         return user;
     }
 
     @Override
-    public PurchaseResponse buy(int quantity, Long productId) {
+    public PurchaseResponse buy(PurchaseRequest purchaseRequest) {
         String principal = SecurityContextHolder.getContext().getAuthentication().getName();
         Optional<User>optionalUser = userRepository.findByUsername(principal);
         User user = optionalUser.orElseThrow(() -> new NotFoundException("User not found"));
 
-        Optional<Product>optionalProduct = productRepository.findById(productId);
+        Optional<Product>optionalProduct = productRepository.findById(purchaseRequest.getProductId());
         Product product = optionalProduct.orElseThrow(() -> new NotFoundException("Product not found"));
 
-        double amount = quantity * product.getCost();
+        double amount = purchaseRequest.getQuantity() * product.getCost();
+        if(purchaseRequest.getQuantity() > product.getAmountAvailable()){
+            throw new NoPermissionException("Low Stock: the available product in stock is "+product.getAmountAvailable());
+        }
         if(amount > user.getDeposit()){
             throw new NoPermissionException("Insufficient Amount");
         }
+
         double balance = user.getDeposit()-amount;
         user.setDeposit(balance);
         userRepository.save(user);
@@ -59,7 +65,7 @@ public class TransactionServiceImpl implements TransactionService {
         PurchaseResponse response = new PurchaseResponse();
         response.setChange(balance);
         response.setProductName(product.getProductName());
-        response.setQuantity(quantity);
+        response.setQuantity(purchaseRequest.getQuantity());
         response.setTotalAmount(amount);
 
         return response;

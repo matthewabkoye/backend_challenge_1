@@ -26,10 +26,10 @@ public class ProductController {
     }
 
 
-    @PreAuthorize("hasRole('Seller')")
+    @PreAuthorize("hasAuthority('SELLER')")
     @PostMapping
-    public ResponseEntity<?>create(@RequestBody @Validated CreateProductRequest request){
-        CreateProductResponse product = productService.create(request);
+    public ResponseEntity<?>create(@RequestBody @Validated CreateProductRequest request, Principal principal){
+        CreateProductResponse product = productService.create(request, principal);
         return ResponseEntity.status(HttpStatus.CREATED).body(product);
     }
 
@@ -44,14 +44,14 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.OK).body(productService.fetch(productId,page,pageSize,principal)) ;
     }
 
-    @PreAuthorize("hasAuthority('Seller')")
+    @PreAuthorize("hasAuthority('SELLER')")
     @PutMapping
     public ResponseEntity<?> update(@RequestBody UpdateProductRequest request,
                                     @RequestParam(value = "productId",required = true) Long productId,Principal principal){
         return ResponseEntity.ok(productService.update(request,productId, principal));
     }
 
-    @PreAuthorize("hasAuthority('Seller')")
+    @PreAuthorize("hasAuthority('SELLER')")
     @DeleteMapping
     public ResponseEntity delete(@RequestParam(required = true)Long productId, Principal principal){
         return ResponseEntity.ok(productService.delete(productId, principal));

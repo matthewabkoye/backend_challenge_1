@@ -32,7 +32,7 @@ public class CustomeUserDetailService implements UserDetailsService {
     }
 
     private Collection<? extends GrantedAuthority> getAuthorities(User u) {
-        SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(u.getRole());
+        SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(u.getRole().name());
         Set<SimpleGrantedAuthority>set = new HashSet<>();
         set.add(simpleGrantedAuthority);
         return set;

@@ -2,6 +2,7 @@ package com.matt.test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.matt.test.dto.CreateUserRequest;
+import com.matt.test.enums.Role;
 import com.matt.test.model.User;
 import com.matt.test.repo.UserRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -10,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -35,14 +37,14 @@ public class IntegrationTest {
         u.setPassword("pass1231");
         u.setUsername("testUser1");
         u.setDeposit(50);
-        u.setRole("Seller");
+        u.setRole(Role.SELLER);
         userRepository.save(u);
 
         u = new User();
         u.setPassword("pass1232");
         u.setUsername("testUser2");
         u.setDeposit(50);
-        u.setRole("Buyer");
+        u.setRole(Role.BUYER);
         userRepository.save(u);
     }
 
@@ -56,8 +58,8 @@ public class IntegrationTest {
         CreateUserRequest createUserRequest = new CreateUserRequest();
         createUserRequest.setUsername("testUser");
         createUserRequest.setPassword("pass123");
-        createUserRequest.setRole("Seller");
-        createUserRequest.setDeposit(100);
+        createUserRequest.setRole(Role.SELLER);
+        createUserRequest.setDeposit(100D);
         String req = mapper.writeValueAsString(createUserRequest);
         this.mockMvc.perform(post("/user").accept(MediaType.APPLICATION_JSON)
                 .contentType("application/json")
@@ -67,7 +69,9 @@ public class IntegrationTest {
 
     @Test
     void testUserFetch_success() throws Exception{
-        this.mockMvc.perform(get("/user"))
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBasicAuth("testUser1","pass1231");
+        this.mockMvc.perform(get("/user").headers(headers))
                 .andDo(print())
                 .andExpect(status().is2xxSuccessful());
     }
