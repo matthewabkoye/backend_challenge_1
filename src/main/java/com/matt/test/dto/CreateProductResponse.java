@@ -13,4 +13,5 @@ public class CreateProductResponse {
     private Long amountAvailable;
     private Double cost;
     private Long SellerId;
+    private Long productId;
 }

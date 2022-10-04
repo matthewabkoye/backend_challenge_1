@@ -12,7 +12,7 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "amount_available", unique = true)
+    @Column(name = "amount_available")
     private Long amountAvailable;
 
     private double cost;

@@ -44,6 +44,7 @@ public class ProductServiceImpl implements ProductService {
        Optional<User>optUser = userRepository.findByUsername(principal.getName());
 
        Product product = mapper.convertValue(request,Product.class);
+
        product.setSellerId(optUser.get());
        product = productRepository.save(product);
        CreateProductResponse resp = new CreateProductResponse();
@@ -51,6 +52,7 @@ public class ProductServiceImpl implements ProductService {
        resp.setCost(product.getCost());
        resp.setAmountAvailable(product.getAmountAvailable());
        resp.setSellerId(product.getSellerId().getId());
+       resp.setProductId(product.getId());
        return resp;
     }
 
