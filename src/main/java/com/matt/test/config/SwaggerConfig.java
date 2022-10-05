@@ -1,5 +1,5 @@
 package com.matt.test.config;
-
+//
 //import java.util.Arrays;
 //import java.util.Collections;
 //import java.util.List;
@@ -8,6 +8,7 @@ package com.matt.test.config;
 //import org.springframework.context.annotation.Configuration;
 //
 //import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+//import springfox.documentation.builders.ApiInfoBuilder;
 //import springfox.documentation.builders.PathSelectors;
 //import springfox.documentation.builders.RequestHandlerSelectors;
 //import springfox.documentation.service.*;
@@ -36,10 +37,16 @@ public class SwaggerConfig {
 //    public Docket api() {
 //        return new Docket(DocumentationType.SWAGGER_2)
 //                .select()
-//                .apis(RequestHandlerSelectors.basePackage("com.matt.test"))
+//                .apis(RequestHandlerSelectors.basePackage("com.matt.test.rest"))
 //                .paths(PathSelectors.any())
 //                .build()
-//                .apiInfo(apiInfo())
+//                .apiInfo(new ApiInfoBuilder()
+//                        .title("MVP Assignment")
+//                        .description("This is vending machine assignment")
+//                        .version("1.0")
+//                        .contact(new Contact("Matthew Abikoye","","matthewabikoye@gmail.com"))
+//                        .build())
+//
 //                .securitySchemes(securitySchemes())
 //                .securityContexts(Arrays.asList(securityContext()));
 //    }

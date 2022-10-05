@@ -11,7 +11,9 @@
           dialect: 'org.hibernate.dialect.MySQL5InnoDBDialect'
       hibernate:
         ddl-auto: update
-
+    mvc:
+      pathmatch:
+        matching-strategy: ant_path_matcher
   server:
     port: 8080
 #    servlet:
