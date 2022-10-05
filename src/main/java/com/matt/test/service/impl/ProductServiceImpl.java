@@ -21,6 +21,7 @@ import java.security.Principal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -61,10 +62,14 @@ public class ProductServiceImpl implements ProductService {
         if(productId == null){
             PageRequest pageRequest = PageRequest.of(page-1, pageSize);
             Page<Product>productPage = productRepository.findAll(pageRequest);
-            return productPage.getContent();
+            return productPage.getContent().stream().map(p ->{
+                p.setSellerId(null);
+                return p;
+            }).collect(Collectors.toList());
         }else{
             Optional<Product>optProduct = productRepository.findById(productId);
             Product p = optProduct.orElseThrow(() -> new NotFoundException("Product name not find"));
+            p.setSellerId(null);
             return Arrays.asList(p);
         }
     }
